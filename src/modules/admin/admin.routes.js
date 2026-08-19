@@ -13,6 +13,15 @@ const {
   toggleUserStatus,
   getRequestLogs,
 } = require("./controllers/adminUser.controller");
+const {
+  listModels,
+  createModel,
+  updateModel,
+  deleteModel,
+  toggleModelStatus,
+  getModelStats,
+  seedDefaultModels,
+} = require("./controllers/adminModel.controller");
 
 // AI Config
 router.get("/ai/config", adminAuth, getAIConfig);
@@ -29,5 +38,14 @@ router.post("/users/:userId/toggle", adminAuth, toggleUserStatus);
 
 // Request Logs
 router.get("/logs", adminAuth, getRequestLogs);
+
+// AI Model Management
+router.get("/models", adminAuth, listModels);
+router.post("/models", adminAuth, createModel);
+router.put("/models/:modelId", adminAuth, updateModel);
+router.delete("/models/:modelId", adminAuth, deleteModel);
+router.post("/models/:modelId/toggle", adminAuth, toggleModelStatus);
+router.get("/models/stats", adminAuth, getModelStats);
+router.post("/models/seed", adminAuth, seedDefaultModels);
 
 module.exports = router;

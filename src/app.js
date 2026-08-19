@@ -10,9 +10,12 @@ const { initRedis } = require("./config/redis");
 const { globalLimiter } = require("./middlewares/rateLimiter");
 const { requestLogger } = require("./middlewares/requestLogger");
 
+const authRoutes = require("./modules/auth/auth.routes");
 const userRoutes = require("./modules/user/user.routes");
 const aiRoutes = require("./modules/ai/ai.routes");
 const adminRoutes = require("./modules/admin/admin.routes");
+const fileRoutes = require("./modules/file/file.routes");
+const webhookRoutes = require("./modules/webhook/webhook.routes");
 
 const app = express();
 
@@ -49,9 +52,12 @@ app.get("/health", (req, res) => {
   });
 });
 
+app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/ai", aiRoutes);
 app.use("/api/v1/admin", adminRoutes);
+app.use("/api/v1/files", fileRoutes);
+app.use("/api/v1/webhooks", webhookRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ error: "Endpoint topilmadi" });
