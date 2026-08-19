@@ -38,4 +38,8 @@ const adminAuth = async (req, res, next) => {
   }
 };
 
-module.exports = { auth, adminAuth };
+module.exports = {
+  auth,
+  adminAuth,
+  authenticateToken: auth  // Alias for compatibility
+};
