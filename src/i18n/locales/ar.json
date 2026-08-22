@@ -1,0 +1,48 @@
+{
+  "common": {
+    "internal_error": "حدث خطأ ما. يرجى المحاولة مرة أخرى لاحقًا.",
+    "not_found": "غير موجود.",
+    "validation_error": "خطأ في التحقق",
+    "unauthorized": "المصادقة مطلوبة",
+    "forbidden": "ليس لديك إذن للقيام بهذا الإجراء",
+    "language_updated": "تم تحديث اللغة بنجاح"
+  },
+  "auth": {
+    "invalid_credentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة",
+    "email_already_exists": "هذا البريد الإلكتروني مسجل بالفعل",
+    "email_not_verified": "يرجى تأكيد بريدك الإلكتروني قبل تسجيل الدخول",
+    "registration_success": "تم التسجيل بنجاح. يرجى التحقق من بريدك الإلكتروني لتأكيد حسابك.",
+    "login_success": "تم تسجيل الدخول بنجاح",
+    "invalid_token": "الرمز غير صالح أو منتهي الصلاحية",
+    "email_verified": "تم تأكيد البريد الإلكتروني بنجاح",
+    "password_reset_sent": "إذا كان هذا البريد الإلكتروني مسجلاً، فقد تم إرسال رابط إعادة تعيين كلمة المرور",
+    "password_reset_success": "تمت إعادة تعيين كلمة المرور بنجاح",
+    "user_not_found": "المستخدم غير موجود",
+    "already_verified": "البريد الإلكتروني مؤكد بالفعل"
+  },
+  "ai": {
+    "prompt_required": "المطلوب إدخال نص الطلب",
+    "daily_limit_reached": "تم الوصول إلى الحد اليومي للطلبات",
+    "provider_not_configured": "مزود الذكاء الاصطناعي \"{{provider}}\" غير مُهيأ أو مفتاح API مفقود. المزودون المُهيأون: {{configured}}",
+    "model_not_found": "النموذج النشط \"{{model}}\" غير موجود. تحقق من النماذج المتاحة عبر GET /api/v1/admin/models.",
+    "unknown_provider": "مزود ذكاء اصطناعي غير معروف: \"{{provider}}\". المحولات المتاحة: {{available}}",
+    "feedback_invalid_rating": "يجب أن يكون rating إما 'good' أو 'bad'",
+    "feedback_saved": "تم حفظ التقييم",
+    "feedback_not_found": "الرد غير موجود أو لا يخصك",
+    "regenerate_not_found": "الرد الأصلي غير موجود أو لا يخصك"
+  },
+  "billing": {
+    "disabled": "نظام الدفع معطل حاليًا",
+    "plan_not_found": "الخطة النشطة \"{{slug}}\" غير موجودة",
+    "price_not_configured": "معرّف السعر في Stripe غير مُهيأ للخطة \"{{slug}}\"",
+    "customer_not_found": "لم يتم العثور على عميل Stripe لهذا المستخدم"
+  },
+  "admin": {
+    "user_not_found": "المستخدم غير موجود",
+    "model_not_found": "النموذج غير موجود",
+    "plan_not_found": "الخطة غير موجودة",
+    "invalid_provider": "مزود غير صالح: \"{{provider}}\". المزودون المدعومون: {{supported}}",
+    "cannot_delete_own_admin": "لا يمكنك إزالة صلاحيات المسؤول الخاصة بك",
+    "last_admin_write_protection": "هذا هو المسؤول الوحيد الذي لديه صلاحية إدارة المسؤولين. امنح هذه الصلاحية لمسؤول آخر أولاً."
+  }
+}

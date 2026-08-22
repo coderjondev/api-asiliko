@@ -1,0 +1,48 @@
+{
+  "common": {
+    "internal_error": "Something went wrong. Please try again later.",
+    "not_found": "Not found.",
+    "validation_error": "Validation error",
+    "unauthorized": "Authentication required",
+    "forbidden": "You don't have permission to perform this action",
+    "language_updated": "Language updated successfully"
+  },
+  "auth": {
+    "invalid_credentials": "Invalid email or password",
+    "email_already_exists": "This email is already registered",
+    "email_not_verified": "Please verify your email before logging in",
+    "registration_success": "Registration successful. Please check your email to verify your account.",
+    "login_success": "Login successful",
+    "invalid_token": "Invalid or expired token",
+    "email_verified": "Email verified successfully",
+    "password_reset_sent": "If this email is registered, a password reset link has been sent",
+    "password_reset_success": "Password reset successfully",
+    "user_not_found": "User not found",
+    "already_verified": "Email is already verified"
+  },
+  "ai": {
+    "prompt_required": "Prompt is required",
+    "daily_limit_reached": "Daily request limit reached",
+    "provider_not_configured": "AI provider \"{{provider}}\" is not configured or missing an API key. Configured providers: {{configured}}",
+    "model_not_found": "Active model \"{{model}}\" not found. Check available models via GET /api/v1/admin/models.",
+    "unknown_provider": "Unknown AI provider: \"{{provider}}\". Available adapters: {{available}}",
+    "feedback_invalid_rating": "rating must be 'good' or 'bad'",
+    "feedback_saved": "Feedback saved",
+    "feedback_not_found": "Response not found or does not belong to you",
+    "regenerate_not_found": "Original response not found or does not belong to you"
+  },
+  "billing": {
+    "disabled": "Billing is currently disabled",
+    "plan_not_found": "Active plan \"{{slug}}\" not found",
+    "price_not_configured": "Stripe price ID is not configured for plan \"{{slug}}\"",
+    "customer_not_found": "Stripe customer not found for this user"
+  },
+  "admin": {
+    "user_not_found": "User not found",
+    "model_not_found": "Model not found",
+    "plan_not_found": "Plan not found",
+    "invalid_provider": "Invalid provider: \"{{provider}}\". Supported providers: {{supported}}",
+    "cannot_delete_own_admin": "You cannot remove your own admin privileges",
+    "last_admin_write_protection": "This is the only admin with write access to admin management. Grant this permission to another admin first."
+  }
+}

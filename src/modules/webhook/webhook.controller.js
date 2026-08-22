@@ -1,6 +1,7 @@
 const Webhook = require("../../models/Webhook");
 const crypto = require("crypto");
 const logger = require("../../utils/logger");
+const { isUrlSafeForOutboundRequest } = require("../../utils/urlSafety");
 
 exports.createWebhook = async (req, res) => {
   try {
@@ -8,6 +9,13 @@ exports.createWebhook = async (req, res) => {
 
     if (!name || !url || !events || events.length === 0) {
       return res.status(400).json({ error: "Name, URL, and events are required" });
+    }
+
+    // SSRF himoyasi: foydalanuvchi ichki tarmoq yoki cloud metadata
+    // manzillarini kiritishining oldini olamiz.
+    const urlCheck = await isUrlSafeForOutboundRequest(url);
+    if (!urlCheck.safe) {
+      return res.status(400).json({ error: `Yaroqsiz webhook URL: ${urlCheck.reason}` });
     }
 
     const secret = crypto.randomBytes(32).toString("hex");
@@ -81,6 +89,13 @@ exports.updateWebhook = async (req, res) => {
 
     if (!webhook) {
       return res.status(404).json({ error: "Webhook not found" });
+    }
+
+    if (url) {
+      const urlCheck = await isUrlSafeForOutboundRequest(url);
+      if (!urlCheck.safe) {
+        return res.status(400).json({ error: `Yaroqsiz webhook URL: ${urlCheck.reason}` });
+      }
     }
 
     if (name) webhook.name = name;

@@ -1,0 +1,48 @@
+{
+  "common": {
+    "internal_error": "Xatolik yuz berdi. Keyinroq qayta urinib ko'ring.",
+    "not_found": "Topilmadi.",
+    "validation_error": "Validatsiya xatosi",
+    "unauthorized": "Autentifikatsiya talab qilinadi",
+    "forbidden": "Bu amalni bajarish uchun ruxsatingiz yo'q",
+    "language_updated": "Til muvaffaqiyatli o'zgartirildi"
+  },
+  "auth": {
+    "invalid_credentials": "Email yoki parol noto'g'ri",
+    "email_already_exists": "Bu email allaqachon ro'yxatdan o'tgan",
+    "email_not_verified": "Kirishdan oldin emailingizni tasdiqlang",
+    "registration_success": "Ro'yxatdan o'tish muvaffaqiyatli. Hisobingizni tasdiqlash uchun emailingizni tekshiring.",
+    "login_success": "Kirish muvaffaqiyatli",
+    "invalid_token": "Token yaroqsiz yoki muddati tugagan",
+    "email_verified": "Email muvaffaqiyatli tasdiqlandi",
+    "password_reset_sent": "Agar bu email ro'yxatdan o'tgan bo'lsa, parolni tiklash havolasi yuborildi",
+    "password_reset_success": "Parol muvaffaqiyatli yangilandi",
+    "user_not_found": "Foydalanuvchi topilmadi",
+    "already_verified": "Email allaqachon tasdiqlangan"
+  },
+  "ai": {
+    "prompt_required": "Prompt talab qilinadi",
+    "daily_limit_reached": "Kunlik so'rov limiti tugadi",
+    "provider_not_configured": "\"{{provider}}\" AI provayderi sozlanmagan yoki API key berilmagan. Sozlangan provayderlar: {{configured}}",
+    "model_not_found": "\"{{model}}\" nomli faol model topilmadi. Mavjud modellarni GET /api/v1/admin/models orqali tekshiring.",
+    "unknown_provider": "Noma'lum AI provider: \"{{provider}}\". Mavjud adapterlar: {{available}}",
+    "feedback_invalid_rating": "rating 'good' yoki 'bad' bo'lishi kerak",
+    "feedback_saved": "Feedback saqlandi",
+    "feedback_not_found": "Javob topilmadi yoki sizga tegishli emas",
+    "regenerate_not_found": "Asl javob topilmadi yoki sizga tegishli emas"
+  },
+  "billing": {
+    "disabled": "To'lov tizimi hozircha o'chirilgan",
+    "plan_not_found": "\"{{slug}}\" nomli faol tarif topilmadi",
+    "price_not_configured": "\"{{slug}}\" tarifi uchun Stripe price ID sozlanmagan",
+    "customer_not_found": "Foydalanuvchi uchun Stripe mijoz topilmadi"
+  },
+  "admin": {
+    "user_not_found": "Foydalanuvchi topilmadi",
+    "model_not_found": "Model topilmadi",
+    "plan_not_found": "Tarif topilmadi",
+    "invalid_provider": "Noto'g'ri provider: \"{{provider}}\". Qo'llab-quvvatlanadigan providerlar: {{supported}}",
+    "cannot_delete_own_admin": "O'zingizning admin huquqingizni olib tashlay olmaysiz",
+    "last_admin_write_protection": "Bu — admin boshqaruvi huquqiga ega yagona admin. Avval boshqa adminga shu huquqni bering."
+  }
+}

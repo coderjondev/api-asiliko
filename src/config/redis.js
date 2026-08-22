@@ -20,10 +20,12 @@ const initRedis = () => {
 };
 
 const getRedisClient = () => {
-  if (!redisClient) {
-    throw new Error("Redis ulanmagan");
-  }
   return redisClient;
 };
 
-module.exports = { initRedis, getRedisClient, redisClient };
+// Alias — ai.service.js va boshqa joylarda shu nom bilan ishlatiladi.
+// getRedisClient farqli o'laroq, xato tashlamaydi — null qaytaradi,
+// chaqiruvchi tomon "Redis yo'q" holatini o'zi hal qilishi kerak (masalan cache skip).
+const getRedis = () => redisClient;
+
+module.exports = { initRedis, getRedisClient, getRedis, redisClient };

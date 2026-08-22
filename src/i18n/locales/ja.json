@@ -1,0 +1,48 @@
+{
+  "common": {
+    "internal_error": "エラーが発生しました。しばらくしてからもう一度お試しください。",
+    "not_found": "見つかりません。",
+    "validation_error": "検証エラー",
+    "unauthorized": "認証が必要です",
+    "forbidden": "この操作を実行する権限がありません",
+    "language_updated": "言語が正常に更新されました"
+  },
+  "auth": {
+    "invalid_credentials": "メールアドレスまたはパスワードが正しくありません",
+    "email_already_exists": "このメールアドレスは既に登録されています",
+    "email_not_verified": "ログイン前にメールアドレスを確認してください",
+    "registration_success": "登録が完了しました。アカウントを確認するためメールをご確認ください。",
+    "login_success": "ログインに成功しました",
+    "invalid_token": "トークンが無効または期限切れです",
+    "email_verified": "メールアドレスが確認されました",
+    "password_reset_sent": "このメールアドレスが登録されている場合、パスワードリセット用のリンクを送信しました",
+    "password_reset_success": "パスワードが正常にリセットされました",
+    "user_not_found": "ユーザーが見つかりません",
+    "already_verified": "メールアドレスは既に確認済みです"
+  },
+  "ai": {
+    "prompt_required": "プロンプトが必要です",
+    "daily_limit_reached": "1日のリクエスト上限に達しました",
+    "provider_not_configured": "AIプロバイダー「{{provider}}」が設定されていないか、APIキーがありません。設定済みのプロバイダー：{{configured}}",
+    "model_not_found": "有効なモデル「{{model}}」が見つかりません。GET /api/v1/admin/models で利用可能なモデルを確認してください。",
+    "unknown_provider": "不明なAIプロバイダー：「{{provider}}」。利用可能なアダプター：{{available}}",
+    "feedback_invalid_rating": "ratingは 'good' または 'bad' である必要があります",
+    "feedback_saved": "フィードバックを保存しました",
+    "feedback_not_found": "回答が見つからないか、あなたのものではありません",
+    "regenerate_not_found": "元の回答が見つからないか、あなたのものではありません"
+  },
+  "billing": {
+    "disabled": "現在、決済システムは無効になっています",
+    "plan_not_found": "有効なプラン「{{slug}}」が見つかりません",
+    "price_not_configured": "プラン「{{slug}}」にStripeの価格IDが設定されていません",
+    "customer_not_found": "このユーザーのStripe顧客情報が見つかりません"
+  },
+  "admin": {
+    "user_not_found": "ユーザーが見つかりません",
+    "model_not_found": "モデルが見つかりません",
+    "plan_not_found": "プランが見つかりません",
+    "invalid_provider": "無効なプロバイダー：「{{provider}}」。サポートされているプロバイダー：{{supported}}",
+    "cannot_delete_own_admin": "自分自身の管理者権限を削除することはできません",
+    "last_admin_write_protection": "これは管理者管理権限を持つ唯一の管理者です。先に他の管理者にこの権限を付与してください。"
+  }
+}

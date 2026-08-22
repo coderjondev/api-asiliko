@@ -6,7 +6,10 @@ const requestLogSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
-    apiKey: String,
+    apiKey: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "ApiKey",
+    },
     method: String,
     path: String,
     statusCode: Number,

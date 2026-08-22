@@ -13,10 +13,19 @@ const aiModelSchema = new mongoose.Schema(
       unique: true,
       trim: true,
     },
+    // ILGARI qattiq enum edi: ["deepseek", "gemini", "openai", "anthropic",
+    // "openrouter", "groq", "mistral"] — bu ro'yxatda kod darajasida
+    // adapter mavjud bo'lmagan nomlar ham bor edi (openrouter/groq/mistral),
+    // ya'ni admin panelda model yaratish mumkin edi, lekin so'rov
+    // yuborilganda ishlamas edi. Endi bu tekshiruv olib tashlandi —
+    // haqiqiy validatsiya adminModel.controller.js da
+    // providers/registry.js ga qarab amalga oshiriladi (yagona haqiqat
+    // manbai). Bu yerda faqat "bo'sh emas" talab qilinadi.
     provider: {
       type: String,
       required: true,
-      enum: ["deepseek", "gemini", "openai", "anthropic", "openrouter", "groq", "mistral"],
+      trim: true,
+      lowercase: true,
     },
     description: {
       type: String,
@@ -39,10 +48,17 @@ const aiModelSchema = new mongoose.Schema(
       vision: { type: Boolean, default: false },
       webSearch: { type: Boolean, default: false },
     },
+    // Bu model qaysi tarif(lar) uchun ochiq — Plan.slug kalitlari bilan.
+    // ILGARI: { free: Boolean, pro: Boolean, enterprise: Boolean } deb
+    // qattiq yozilgan edi, ya'ni faqat shu 3 ta tarif bilan ishlar edi.
+    // Endi admin istalgan slug qo'shishi mumkin bo'lgani uchun Map
+    // qilindi: masalan { free: false, pro: true, custom_plan: true }.
+    // Bo'sh Map — hech qanday cheklov yo'q, hamma tarifga ochiq deb
+    // talqin qilinadi (ai.service.js da shunday ishlatiladi).
     tierAccess: {
-      free: { type: Boolean, default: false },
-      pro: { type: Boolean, default: true },
-      enterprise: { type: Boolean, default: true },
+      type: Map,
+      of: Boolean,
+      default: {},
     },
     isActive: {
       type: Boolean,

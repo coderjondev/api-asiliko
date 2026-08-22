@@ -1,0 +1,48 @@
+{
+  "common": {
+    "internal_error": "Произошла ошибка. Попробуйте позже.",
+    "not_found": "Не найдено.",
+    "validation_error": "Ошибка валидации",
+    "unauthorized": "Требуется аутентификация",
+    "forbidden": "У вас нет прав для выполнения этого действия",
+    "language_updated": "Язык успешно изменён"
+  },
+  "auth": {
+    "invalid_credentials": "Неверный email или пароль",
+    "email_already_exists": "Этот email уже зарегистрирован",
+    "email_not_verified": "Подтвердите email перед входом",
+    "registration_success": "Регистрация прошла успешно. Проверьте email для подтверждения аккаунта.",
+    "login_success": "Вход выполнен успешно",
+    "invalid_token": "Токен недействителен или истёк",
+    "email_verified": "Email успешно подтверждён",
+    "password_reset_sent": "Если этот email зарегистрирован, ссылка для сброса пароля отправлена",
+    "password_reset_success": "Пароль успешно изменён",
+    "user_not_found": "Пользователь не найден",
+    "already_verified": "Email уже подтверждён"
+  },
+  "ai": {
+    "prompt_required": "Требуется запрос (prompt)",
+    "daily_limit_reached": "Достигнут дневной лимит запросов",
+    "provider_not_configured": "AI провайдер \"{{provider}}\" не настроен или отсутствует API ключ. Настроенные провайдеры: {{configured}}",
+    "model_not_found": "Активная модель \"{{model}}\" не найдена. Проверьте доступные модели через GET /api/v1/admin/models.",
+    "unknown_provider": "Неизвестный AI провайдер: \"{{provider}}\". Доступные адаптеры: {{available}}",
+    "feedback_invalid_rating": "rating должен быть 'good' или 'bad'",
+    "feedback_saved": "Отзыв сохранён",
+    "feedback_not_found": "Ответ не найден или не принадлежит вам",
+    "regenerate_not_found": "Исходный ответ не найден или не принадлежит вам"
+  },
+  "billing": {
+    "disabled": "Платёжная система в данный момент отключена",
+    "plan_not_found": "Активный тариф \"{{slug}}\" не найден",
+    "price_not_configured": "Stripe price ID не настроен для тарифа \"{{slug}}\"",
+    "customer_not_found": "Клиент Stripe для этого пользователя не найден"
+  },
+  "admin": {
+    "user_not_found": "Пользователь не найден",
+    "model_not_found": "Модель не найдена",
+    "plan_not_found": "Тариф не найден",
+    "invalid_provider": "Неверный провайдер: \"{{provider}}\". Поддерживаемые провайдеры: {{supported}}",
+    "cannot_delete_own_admin": "Вы не можете снять с себя права администратора",
+    "last_admin_write_protection": "Это единственный администратор с правом управления администраторами. Сначала предоставьте это право другому администратору."
+  }
+}

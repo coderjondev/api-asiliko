@@ -1,0 +1,48 @@
+{
+  "common": {
+    "internal_error": "Algo salió mal. Inténtalo de nuevo más tarde.",
+    "not_found": "No encontrado.",
+    "validation_error": "Error de validación",
+    "unauthorized": "Se requiere autenticación",
+    "forbidden": "No tienes permiso para realizar esta acción",
+    "language_updated": "Idioma actualizado con éxito"
+  },
+  "auth": {
+    "invalid_credentials": "Email o contraseña incorrectos",
+    "email_already_exists": "Este email ya está registrado",
+    "email_not_verified": "Verifica tu email antes de iniciar sesión",
+    "registration_success": "Registro exitoso. Revisa tu email para verificar tu cuenta.",
+    "login_success": "Inicio de sesión exitoso",
+    "invalid_token": "Token inválido o expirado",
+    "email_verified": "Email verificado con éxito",
+    "password_reset_sent": "Si este email está registrado, se ha enviado un enlace para restablecer la contraseña",
+    "password_reset_success": "Contraseña restablecida con éxito",
+    "user_not_found": "Usuario no encontrado",
+    "already_verified": "El email ya está verificado"
+  },
+  "ai": {
+    "prompt_required": "Se requiere un prompt",
+    "daily_limit_reached": "Se alcanzó el límite diario de solicitudes",
+    "provider_not_configured": "El proveedor de IA \"{{provider}}\" no está configurado o falta la clave API. Proveedores configurados: {{configured}}",
+    "model_not_found": "Modelo activo \"{{model}}\" no encontrado. Consulta los modelos disponibles en GET /api/v1/admin/models.",
+    "unknown_provider": "Proveedor de IA desconocido: \"{{provider}}\". Adaptadores disponibles: {{available}}",
+    "feedback_invalid_rating": "rating debe ser 'good' o 'bad'",
+    "feedback_saved": "Comentario guardado",
+    "feedback_not_found": "Respuesta no encontrada o no te pertenece",
+    "regenerate_not_found": "Respuesta original no encontrada o no te pertenece"
+  },
+  "billing": {
+    "disabled": "El sistema de pagos está actualmente deshabilitado",
+    "plan_not_found": "Plan activo \"{{slug}}\" no encontrado",
+    "price_not_configured": "El ID de precio de Stripe no está configurado para el plan \"{{slug}}\"",
+    "customer_not_found": "Cliente de Stripe no encontrado para este usuario"
+  },
+  "admin": {
+    "user_not_found": "Usuario no encontrado",
+    "model_not_found": "Modelo no encontrado",
+    "plan_not_found": "Plan no encontrado",
+    "invalid_provider": "Proveedor inválido: \"{{provider}}\". Proveedores admitidos: {{supported}}",
+    "cannot_delete_own_admin": "No puedes quitarte tus propios privilegios de administrador",
+    "last_admin_write_protection": "Este es el único administrador con permiso de gestión de administradores. Otorga primero este permiso a otro administrador."
+  }
+}

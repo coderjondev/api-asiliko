@@ -1,0 +1,48 @@
+{
+  "common": {
+    "internal_error": "Bir hata oluştu. Lütfen daha sonra tekrar deneyin.",
+    "not_found": "Bulunamadı.",
+    "validation_error": "Doğrulama hatası",
+    "unauthorized": "Kimlik doğrulama gerekli",
+    "forbidden": "Bu işlemi gerçekleştirmek için izniniz yok",
+    "language_updated": "Dil başarıyla güncellendi"
+  },
+  "auth": {
+    "invalid_credentials": "Geçersiz e-posta veya şifre",
+    "email_already_exists": "Bu e-posta zaten kayıtlı",
+    "email_not_verified": "Giriş yapmadan önce e-postanızı doğrulayın",
+    "registration_success": "Kayıt başarılı. Hesabınızı doğrulamak için e-postanızı kontrol edin.",
+    "login_success": "Giriş başarılı",
+    "invalid_token": "Belirteç geçersiz veya süresi dolmuş",
+    "email_verified": "E-posta başarıyla doğrulandı",
+    "password_reset_sent": "Bu e-posta kayıtlıysa, şifre sıfırlama bağlantısı gönderildi",
+    "password_reset_success": "Şifre başarıyla sıfırlandı",
+    "user_not_found": "Kullanıcı bulunamadı",
+    "already_verified": "E-posta zaten doğrulanmış"
+  },
+  "ai": {
+    "prompt_required": "Prompt gerekli",
+    "daily_limit_reached": "Günlük istek sınırına ulaşıldı",
+    "provider_not_configured": "\"{{provider}}\" AI sağlayıcısı yapılandırılmamış veya API anahtarı eksik. Yapılandırılmış sağlayıcılar: {{configured}}",
+    "model_not_found": "\"{{model}}\" adlı aktif model bulunamadı. Mevcut modelleri GET /api/v1/admin/models üzerinden kontrol edin.",
+    "unknown_provider": "Bilinmeyen AI sağlayıcı: \"{{provider}}\". Mevcut adaptörler: {{available}}",
+    "feedback_invalid_rating": "rating 'good' veya 'bad' olmalıdır",
+    "feedback_saved": "Geri bildirim kaydedildi",
+    "feedback_not_found": "Yanıt bulunamadı veya size ait değil",
+    "regenerate_not_found": "Orijinal yanıt bulunamadı veya size ait değil"
+  },
+  "billing": {
+    "disabled": "Ödeme sistemi şu anda devre dışı",
+    "plan_not_found": "\"{{slug}}\" adlı aktif plan bulunamadı",
+    "price_not_configured": "\"{{slug}}\" planı için Stripe fiyat kimliği yapılandırılmamış",
+    "customer_not_found": "Bu kullanıcı için Stripe müşterisi bulunamadı"
+  },
+  "admin": {
+    "user_not_found": "Kullanıcı bulunamadı",
+    "model_not_found": "Model bulunamadı",
+    "plan_not_found": "Plan bulunamadı",
+    "invalid_provider": "Geçersiz sağlayıcı: \"{{provider}}\". Desteklenen sağlayıcılar: {{supported}}",
+    "cannot_delete_own_admin": "Kendi yönetici haklarınızı kaldıramazsınız",
+    "last_admin_write_protection": "Bu, yönetici yönetimi yazma iznine sahip tek yönetici. Önce bu izni başka bir yöneticiye verin."
+  }
+}

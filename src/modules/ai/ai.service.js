@@ -1,11 +1,69 @@
 const aiConfig = require("../../config/ai");
 const Prompt = require("../../models/Prompt");
 const User = require("../../models/User");
+const AIModel = require("../../models/AIModel");
 const logger = require("../../utils/logger");
 const crypto = require("crypto");
 const { getRedis } = require("../../config/redis");
 
+/**
+ * ILGARI: chat() va chatStream() ichida har bir provider uchun qattiq
+ * yozilgan if/else if zanjiri bor edi (faqat "deepseek" va "gemini").
+ * Boshqa provider (masalan "openai") kelsa, hech qanday branch mos
+ * kelmasdi — response undefined qolib, funksiya XATO TASHLAMASDAN
+ * muvaffaqiyatli qaytardi (jim ishlamay qolish bugi).
+ *
+ * ENDI: aiConfig.getAdapter(providerName) orqali mos adapter (registry.js)
+ * olinadi va uning umumiy chat()/chatStream() interfeysi chaqiriladi.
+ * Provider nomi bu faylda hech qayerda hardcoded emas — yangi provider
+ * qo'shish uchun bu faylga tegish shart emas.
+ */
 class AIService {
+  /**
+   * Foydalanuvchi so'rovidan (prompt, provider?, model?) haqiqiy
+   * provider va model nomini aniqlaydi.
+   *
+   * ILGARI: agar frontend faqat `model: "claude-haiku-4-5"` yuborib,
+   * `provider`ni yubormasa, tizim har doim aiConfig.getDefaultProvider()
+   * (masalan "deepseek") ni ishlatar edi — bu NOTO'G'RI, chunki
+   * "claude-haiku-4-5" DeepSeek'da mavjud emas va so'rov xato beradi.
+   *
+   * ENDI: agar provider berilmagan bo'lsa-yu model berilgan bo'lsa,
+   * AIModel kolleksiyasidan modelId orqali qidirib, unga tegishli
+   * provider avtomatik topiladi. Faqat ikkalasi ham berilmagan taqdirda
+   * default provider + uning default modeli ishlatiladi.
+   */
+  async resolveProviderAndModel({ provider, model }) {
+    if (provider && model) {
+      return { provider, model };
+    }
+
+    if (!provider && model) {
+      // Model nomi berilgan, provider berilmagan — AIModel'dan qidiramiz.
+      const modelDoc = await AIModel.findOne({ modelId: model, isActive: true });
+      if (!modelDoc) {
+        const err = new Error(
+          `"${model}" nomli faol model topilmadi. Admin panelda mavjud modellarni GET /api/v1/admin/models orqali tekshiring.`
+        );
+        err.statusCode = 400;
+        err.i18nKey = "ai.model_not_found";
+        err.i18nParams = { model };
+        throw err;
+      }
+      return { provider: modelDoc.provider, model };
+    }
+
+    if (provider && !model) {
+      // Provider berilgan, model berilmagan — shu providerning
+      // standart modelini (SystemConfig("ai").<provider>.model) olamiz.
+      return { provider, model: aiConfig.getProviderConfig(provider).model };
+    }
+
+    // Ikkalasi ham berilmagan — to'liq standart qiymatlar.
+    const defaultProvider = aiConfig.getDefaultProvider();
+    return { provider: defaultProvider, model: aiConfig.getProviderConfig(defaultProvider).model };
+  }
+
   generateCacheKey(prompt, provider, model) {
     const hash = crypto
       .createHash("sha256")
@@ -54,15 +112,31 @@ class AIService {
         throw new Error("Foydalanuvchi topilmadi");
       }
 
-      const selectedProvider = provider || aiConfig.getDefaultProvider();
-      const selectedModel = model || aiConfig.getProviderConfig(selectedProvider).model;
+      const { provider: selectedProvider, model: selectedModel } =
+        await this.resolveProviderAndModel({ provider, model });
 
       // Check cache first
       if (useCache) {
         const cached = await this.getCachedResponse(prompt, selectedProvider, selectedModel);
         if (cached) {
+          // MUHIM: kesh faqat javob MATNINI saqlaydi, Prompt hujjatini
+          // emas. Har bir "chat" chaqiruvi — foydalanuvchi uchun alohida
+          // foydalanish holati (feedback/refresh shu holatga tegishli
+          // bo'lishi kerak), shuning uchun keshdan kelgan taqdirda ham
+          // YANGI Prompt hujjati yaratamiz — bu promptId feedback va
+          // "refresh" uchun ishlatiladi.
+          const promptDoc = await Prompt.create({
+            userId,
+            prompt,
+            response: cached.response,
+            provider: cached.provider,
+            model: cached.model,
+            tokensUsed: cached.tokensUsed,
+          });
+
           return {
             ...cached,
+            promptId: promptDoc._id,
             fromCache: true,
             usage: {
               daily: user.usage.daily,
@@ -77,40 +151,17 @@ class AIService {
         throw new Error("Kunlik limit tugadi");
       }
 
-      const aiProvider = aiConfig.getProvider(selectedProvider);
+      const client = aiConfig.getProvider(selectedProvider);
       const providerConfig = aiConfig.getProviderConfig(selectedProvider);
+      const adapter = aiConfig.getAdapter(selectedProvider);
 
-      let response;
-      let tokensUsed = { input: 0, output: 0, total: 0 };
+      const { response, tokensUsed } = await adapter.chat(client, {
+        model: selectedModel,
+        prompt,
+        maxTokens: providerConfig.maxTokens || quota.maxTokens,
+      });
 
-      if (selectedProvider === "deepseek") {
-        const completion = await aiProvider.chat.completions.create({
-          model: selectedModel,
-          messages: [{ role: "user", content: prompt }],
-          max_tokens: providerConfig.maxTokens || quota.maxTokens,
-          stream: false,
-        });
-
-        response = completion.choices[0].message.content;
-        tokensUsed = {
-          input: completion.usage?.prompt_tokens || 0,
-          output: completion.usage?.completion_tokens || 0,
-          total: completion.usage?.total_tokens || 0,
-        };
-      } else if (selectedProvider === "gemini") {
-        const geminiModel = aiProvider.getGenerativeModel({
-          model: selectedModel,
-        });
-        const result = await geminiModel.generateContent(prompt);
-        response = result.response.text();
-        tokensUsed = {
-          input: result.response.usageMetadata?.promptTokenCount || 0,
-          output: result.response.usageMetadata?.candidatesTokenCount || 0,
-          total: result.response.usageMetadata?.totalTokenCount || 0,
-        };
-      }
-
-      await Prompt.create({
+      const promptDoc = await Prompt.create({
         userId,
         prompt,
         response,
@@ -124,6 +175,7 @@ class AIService {
 
       const result = {
         response,
+        promptId: promptDoc._id,
         provider: selectedProvider,
         model: selectedModel,
         tokensUsed,
@@ -163,60 +215,25 @@ class AIService {
         throw new Error("Kunlik limit tugadi");
       }
 
-      const selectedProvider = provider || aiConfig.getDefaultProvider();
-      const selectedModel = model || aiConfig.getProviderConfig(selectedProvider).model;
-      const aiProvider = aiConfig.getProvider(selectedProvider);
+      const { provider: selectedProvider, model: selectedModel } =
+        await this.resolveProviderAndModel({ provider, model });
+      const client = aiConfig.getProvider(selectedProvider);
       const providerConfig = aiConfig.getProviderConfig(selectedProvider);
+      const adapter = aiConfig.getAdapter(selectedProvider);
 
       let fullResponse = "";
-      let tokensUsed = { input: 0, output: 0, total: 0 };
 
-      if (selectedProvider === "deepseek") {
-        const stream = await aiProvider.chat.completions.create({
-          model: selectedModel,
-          messages: [{ role: "user", content: prompt }],
-          max_tokens: providerConfig.maxTokens || quota.maxTokens,
-          stream: true,
-        });
+      const { tokensUsed } = await adapter.chatStream(client, {
+        model: selectedModel,
+        prompt,
+        maxTokens: providerConfig.maxTokens || quota.maxTokens,
+        onChunk: (content) => {
+          fullResponse += content;
+          onChunk({ type: "chunk", content });
+        },
+      });
 
-        for await (const chunk of stream) {
-          const content = chunk.choices[0]?.delta?.content || "";
-          if (content) {
-            fullResponse += content;
-            onChunk({ type: "chunk", content });
-          }
-
-          if (chunk.usage) {
-            tokensUsed = {
-              input: chunk.usage.prompt_tokens || 0,
-              output: chunk.usage.completion_tokens || 0,
-              total: chunk.usage.total_tokens || 0,
-            };
-          }
-        }
-      } else if (selectedProvider === "gemini") {
-        const geminiModel = aiProvider.getGenerativeModel({
-          model: selectedModel,
-        });
-        const result = await geminiModel.generateContentStream(prompt);
-
-        for await (const chunk of result.stream) {
-          const content = chunk.text();
-          if (content) {
-            fullResponse += content;
-            onChunk({ type: "chunk", content });
-          }
-        }
-
-        const finalResult = await result.response;
-        tokensUsed = {
-          input: finalResult.usageMetadata?.promptTokenCount || 0,
-          output: finalResult.usageMetadata?.candidatesTokenCount || 0,
-          total: finalResult.usageMetadata?.totalTokenCount || 0,
-        };
-      }
-
-      await Prompt.create({
+      const promptDoc = await Prompt.create({
         userId,
         prompt,
         response: fullResponse,
@@ -229,6 +246,7 @@ class AIService {
       await user.save();
 
       onComplete({
+        promptId: promptDoc._id,
         provider: selectedProvider,
         model: selectedModel,
         tokensUsed,
@@ -248,6 +266,66 @@ class AIService {
       .sort({ createdAt: -1 })
       .limit(limit)
       .select("-__v");
+  }
+
+  /**
+   * Foydalanuvchi javobga baho beradi (OpenAI/Gemini/Claude uslubidagi
+   * 👍/👎). Faqat javobning egasi (promptDoc.userId === userId) baho
+   * berishi mumkin — boshqa foydalanuvchining suhbatiga aralashishning
+   * oldini olish uchun.
+   */
+  async submitFeedback(userId, promptId, { rating, comment }) {
+    if (!["good", "bad"].includes(rating)) {
+      const err = new Error("rating 'good' yoki 'bad' bo'lishi kerak");
+      err.statusCode = 400;
+      err.i18nKey = "ai.feedback_invalid_rating";
+      throw err;
+    }
+
+    const promptDoc = await Prompt.findOne({ _id: promptId, userId });
+
+    if (!promptDoc) {
+      const err = new Error("Javob topilmadi yoki sizga tegishli emas");
+      err.statusCode = 404;
+      err.i18nKey = "ai.feedback_not_found";
+      throw err;
+    }
+
+    promptDoc.feedback = {
+      rating,
+      comment: comment || undefined,
+      ratedAt: new Date(),
+    };
+    await promptDoc.save();
+
+    return promptDoc;
+  }
+
+  /**
+   * "Refresh" — foydalanuvchi javobni yoqtirmasa, xuddi shu promptni
+   * (savolni) xuddi shu provider/model bilan qayta yuboradi va YANGI
+   * Prompt hujjati yaratadi (eskisi o'zgarmaydi — tarix saqlanadi,
+   * shu jumladan eski javobga berilgan feedback ham).
+   *
+   * useCache=false bilan chaqiriladi — aks holda kesh eski javobning
+   * aynan o'zini qaytarib, "refresh" ma'nosiz bo'lib qolardi.
+   */
+  async regenerateResponse(userId, promptId) {
+    const originalPrompt = await Prompt.findOne({ _id: promptId, userId });
+
+    if (!originalPrompt) {
+      const err = new Error("Asl javob topilmadi yoki sizga tegishli emas");
+      err.statusCode = 404;
+      err.i18nKey = "ai.regenerate_not_found";
+      throw err;
+    }
+
+    return this.chat(userId, {
+      prompt: originalPrompt.prompt,
+      provider: originalPrompt.provider,
+      model: originalPrompt.model,
+      useCache: false,
+    });
   }
 }
 

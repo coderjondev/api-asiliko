@@ -1,5 +1,6 @@
-const AIModel = require("../../models/AIModel");
-const logger = require("../../utils/logger");
+const AIModel = require("../../../models/AIModel");
+const logger = require("../../../utils/logger");
+const { getSupportedProviderNames } = require("../../ai/providers/registry");
 
 exports.listModels = async (req, res) => {
   try {
@@ -28,9 +29,32 @@ exports.listModels = async (req, res) => {
   }
 };
 
+/**
+ * Frontend/admin panel uchun: kod darajasida qaysi providerlar
+ * qo'llab-quvvatlanishini (adapter mavjudligini) qaytaradi. Model
+ * yaratish formasida dropdown shu ro'yxatdan to'ldiriladi — noto'g'ri
+ * provider nomi kiritishning oldini oladi.
+ */
+exports.listSupportedProviders = async (req, res) => {
+  res.json({ providers: getSupportedProviderNames() });
+};
+
 exports.createModel = async (req, res) => {
   try {
     const modelData = req.body;
+
+    // ILGARI provider nomi hech tekshirilmasdan to'g'ridan-to'g'ri
+    // saqlanardi — masalan "openrouter" deb yozib qo'ysa, model
+    // ro'yxatda ko'rinar, lekin so'rov yuborilganda ai.service.js
+    // "AI provayder sozlanmagan" xatosini berardi. Endi bu yerda
+    // oldindan (yaratish bosqichida) tekshiriladi.
+    const supported = getSupportedProviderNames();
+    if (!modelData.provider || !supported.includes(modelData.provider.toLowerCase())) {
+      return res.status(400).json({
+        error: `Noto'g'ri provider: "${modelData.provider}". Kod darajasida qo'llab-quvvatlanadigan providerlar: ${supported.join(", ")}. Yangi provider qo'shish uchun avval src/modules/ai/providers/registry.js ga adapter qo'shilishi kerak.`,
+        supportedProviders: supported,
+      });
+    }
 
     if (modelData.isDefault) {
       await AIModel.updateMany(
@@ -41,7 +65,7 @@ exports.createModel = async (req, res) => {
 
     const model = await AIModel.create(modelData);
 
-    logger.info(`Admin ${req.user.userId} created model ${model.modelId}`);
+    logger.info(`Admin ${req.userId} created model ${model.modelId}`);
     res.status(201).json(model);
   } catch (error) {
     logger.error("Create model error:", error);
@@ -53,6 +77,25 @@ exports.updateModel = async (req, res) => {
   try {
     const { modelId } = req.params;
     const updates = req.body;
+
+    // modelId o'zgartirib bo'lmaydi — bu Prompt/RequestLog tarixiy
+    // yozuvlarida barqaror identifikator sifatida ishlatiladi (xuddi
+    // Plan.slug kabi). O'zgartirilsa eski yozuvlar "yetim" qolib ketadi.
+    if (updates.modelId !== undefined && updates.modelId !== modelId) {
+      return res.status(400).json({
+        error: "modelId o'zgartirib bo'lmaydi — yangi model yarating va eskisini deactivate qiling",
+      });
+    }
+
+    if (updates.provider) {
+      const supported = getSupportedProviderNames();
+      if (!supported.includes(updates.provider.toLowerCase())) {
+        return res.status(400).json({
+          error: `Noto'g'ri provider: "${updates.provider}". Qo'llab-quvvatlanadigan providerlar: ${supported.join(", ")}`,
+          supportedProviders: supported,
+        });
+      }
+    }
 
     if (updates.isDefault) {
       const model = await AIModel.findOne({ modelId });
@@ -70,7 +113,7 @@ exports.updateModel = async (req, res) => {
       return res.status(404).json({ error: "Model not found" });
     }
 
-    logger.info(`Admin ${req.user.userId} updated model ${modelId}`);
+    logger.info(`Admin ${req.userId} updated model ${modelId}`);
     res.json(model);
   } catch (error) {
     logger.error("Update model error:", error);
@@ -81,6 +124,14 @@ exports.updateModel = async (req, res) => {
 exports.deleteModel = async (req, res) => {
   try {
     const { modelId } = req.params;
+    const Prompt = require("../../../models/Prompt");
+
+    // Tarixiy foydalanish statistikasi bormi tekshiramiz — o'chirish
+    // baribir ruxsat etiladi (bu admin qarori), lekin oldindan
+    // ogohlantiramiz, chunki keyinchalik shu modelId bilan yuborilgan
+    // eski so'rov (masalan frontend keshida qolgan) endi
+    // "model topilmadi" xatosiga uchraydi.
+    const historicalUsageCount = await Prompt.countDocuments({ model: modelId });
 
     const model = await AIModel.findOneAndDelete({ modelId });
 
@@ -88,8 +139,14 @@ exports.deleteModel = async (req, res) => {
       return res.status(404).json({ error: "Model not found" });
     }
 
-    logger.info(`Admin ${req.user.userId} deleted model ${modelId}`);
-    res.json({ message: "Model deleted successfully" });
+    logger.info(`Admin ${req.userId} deleted model ${modelId} (${historicalUsageCount} ta tarixiy so'rov bor edi)`);
+    res.json({
+      message: "Model deleted successfully",
+      warning:
+        historicalUsageCount > 0
+          ? `Bu modelga tegishli ${historicalUsageCount} ta tarixiy so'rov (Prompt) saqlanib qoladi, lekin bu modelId endi yangi so'rovlar uchun ishlamaydi. Buning o'rniga isActive=false qilishni ko'rib chiqing.`
+          : undefined,
+    });
   } catch (error) {
     logger.error("Delete model error:", error);
     res.status(500).json({ error: "Failed to delete model" });
@@ -109,7 +166,7 @@ exports.toggleModelStatus = async (req, res) => {
     model.isActive = !model.isActive;
     await model.save();
 
-    logger.info(`Admin ${req.user.userId} ${model.isActive ? "enabled" : "disabled"} model ${modelId}`);
+    logger.info(`Admin ${req.userId} ${model.isActive ? "enabled" : "disabled"} model ${modelId}`);
     res.json(model);
   } catch (error) {
     logger.error("Toggle model status error:", error);
@@ -157,6 +214,11 @@ exports.getModelStats = async (req, res) => {
 
 exports.seedDefaultModels = async (req, res) => {
   try {
+    // Eslatma: tierAccess endi Mongoose Map (AIModel.js ga qarang), lekin
+    // oddiy JS obyekt sifatida yozish ham ishlaydi — Mongoose buni
+    // avtomatik Map'ga o'giradi. Bu yerdagi "free"/"pro"/"enterprise"
+    // kalitlari endi hech narsani cheklamaydi — ular Plan.slug bilan mos
+    // kelgan taqdirdagina ma'no anglatadi (standart seed uchun mos).
     const defaultModels = [
       {
         name: "DeepSeek V4 Pro",
@@ -211,7 +273,7 @@ exports.seedDefaultModels = async (req, res) => {
       }
     }
 
-    logger.info(`Admin ${req.user.userId} seeded ${results.length} default models`);
+    logger.info(`Admin ${req.userId} seeded ${results.length} default models`);
     res.json({
       message: `Successfully seeded ${results.length} models`,
       models: results,

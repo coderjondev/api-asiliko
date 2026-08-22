@@ -24,24 +24,7 @@ const startServer = async () => {
       console.log(`📍 Port: ${PORT}`);
       console.log(`🌐 URL: http://localhost:${PORT}`);
       console.log(`🔒 Environment: ${process.env.NODE_ENV || "development"}`);
-      console.log(`\n📚 API Endpoints:`);
-      console.log(`   GET  /                         - Health check`);
-      console.log(`   GET  /health                   - Health status`);
-      console.log(`\n👤 User:`);
-      console.log(`   POST /api/v1/users/register    - Ro'yxatdan o'tish`);
-      console.log(`   POST /api/v1/users/login       - Kirish`);
-      console.log(`   GET  /api/v1/users/profile     - Profil`);
-      console.log(`   POST /api/v1/users/api-keys    - API key yaratish`);
-      console.log(`   GET  /api/v1/users/api-keys    - API keylar ro'yxati`);
-      console.log(`   DELETE /api/v1/users/api-keys/:id - API key o'chirish`);
-      console.log(`\n🤖 AI:`);
-      console.log(`   POST /api/v1/ai/chat           - AI chat`);
-      console.log(`   GET  /api/v1/ai/history        - Chat tarixi`);
-      console.log(`\n👨‍💼 Admin:`);
-      console.log(`   GET  /api/v1/admin/stats       - Tizim statistikasi`);
-      console.log(`   GET  /api/v1/admin/users       - Foydalanuvchilar`);
-      console.log(`   GET  /api/v1/admin/logs        - Request loglar`);
-      console.log(`   GET  /api/v1/admin/ai/config   - AI config`);
+      console.log(`📖 API hujjatlari: http://localhost:${PORT}/api-docs`);
       console.log(`\n⏳ Ctrl+C bilan to'xtatish\n`);
     });
   } catch (error) {

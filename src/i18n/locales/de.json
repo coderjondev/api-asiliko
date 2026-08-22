@@ -1,0 +1,48 @@
+{
+  "common": {
+    "internal_error": "Etwas ist schiefgelaufen. Bitte versuchen Sie es später erneut.",
+    "not_found": "Nicht gefunden.",
+    "validation_error": "Validierungsfehler",
+    "unauthorized": "Authentifizierung erforderlich",
+    "forbidden": "Sie haben keine Berechtigung für diese Aktion",
+    "language_updated": "Sprache erfolgreich aktualisiert"
+  },
+  "auth": {
+    "invalid_credentials": "Ungültige E-Mail oder Passwort",
+    "email_already_exists": "Diese E-Mail ist bereits registriert",
+    "email_not_verified": "Bitte bestätigen Sie Ihre E-Mail vor der Anmeldung",
+    "registration_success": "Registrierung erfolgreich. Bitte überprüfen Sie Ihre E-Mail zur Bestätigung.",
+    "login_success": "Anmeldung erfolgreich",
+    "invalid_token": "Token ungültig oder abgelaufen",
+    "email_verified": "E-Mail erfolgreich bestätigt",
+    "password_reset_sent": "Falls diese E-Mail registriert ist, wurde ein Link zum Zurücksetzen des Passworts gesendet",
+    "password_reset_success": "Passwort erfolgreich zurückgesetzt",
+    "user_not_found": "Benutzer nicht gefunden",
+    "already_verified": "E-Mail bereits bestätigt"
+  },
+  "ai": {
+    "prompt_required": "Prompt ist erforderlich",
+    "daily_limit_reached": "Tägliches Anfragelimit erreicht",
+    "provider_not_configured": "KI-Anbieter \"{{provider}}\" ist nicht konfiguriert oder es fehlt ein API-Schlüssel. Konfigurierte Anbieter: {{configured}}",
+    "model_not_found": "Aktives Modell \"{{model}}\" nicht gefunden. Verfügbare Modelle über GET /api/v1/admin/models prüfen.",
+    "unknown_provider": "Unbekannter KI-Anbieter: \"{{provider}}\". Verfügbare Adapter: {{available}}",
+    "feedback_invalid_rating": "rating muss 'good' oder 'bad' sein",
+    "feedback_saved": "Feedback gespeichert",
+    "feedback_not_found": "Antwort nicht gefunden oder gehört nicht Ihnen",
+    "regenerate_not_found": "Ursprüngliche Antwort nicht gefunden oder gehört nicht Ihnen"
+  },
+  "billing": {
+    "disabled": "Zahlungssystem ist derzeit deaktiviert",
+    "plan_not_found": "Aktiver Plan \"{{slug}}\" nicht gefunden",
+    "price_not_configured": "Stripe-Preis-ID für Plan \"{{slug}}\" nicht konfiguriert",
+    "customer_not_found": "Stripe-Kunde für diesen Benutzer nicht gefunden"
+  },
+  "admin": {
+    "user_not_found": "Benutzer nicht gefunden",
+    "model_not_found": "Modell nicht gefunden",
+    "plan_not_found": "Plan nicht gefunden",
+    "invalid_provider": "Ungültiger Anbieter: \"{{provider}}\". Unterstützte Anbieter: {{supported}}",
+    "cannot_delete_own_admin": "Sie können Ihre eigenen Administratorrechte nicht entfernen",
+    "last_admin_write_protection": "Dies ist der einzige Administrator mit Schreibrechten für die Administratorverwaltung. Gewähren Sie diese Berechtigung zuerst einem anderen Administrator."
+  }
+}

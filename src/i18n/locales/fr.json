@@ -1,0 +1,48 @@
+{
+  "common": {
+    "internal_error": "Une erreur s'est produite. Veuillez réessayer plus tard.",
+    "not_found": "Introuvable.",
+    "validation_error": "Erreur de validation",
+    "unauthorized": "Authentification requise",
+    "forbidden": "Vous n'avez pas la permission d'effectuer cette action",
+    "language_updated": "Langue mise à jour avec succès"
+  },
+  "auth": {
+    "invalid_credentials": "Email ou mot de passe invalide",
+    "email_already_exists": "Cet email est déjà enregistré",
+    "email_not_verified": "Veuillez vérifier votre email avant de vous connecter",
+    "registration_success": "Inscription réussie. Vérifiez votre email pour confirmer votre compte.",
+    "login_success": "Connexion réussie",
+    "invalid_token": "Jeton invalide ou expiré",
+    "email_verified": "Email vérifié avec succès",
+    "password_reset_sent": "Si cet email est enregistré, un lien de réinitialisation a été envoyé",
+    "password_reset_success": "Mot de passe réinitialisé avec succès",
+    "user_not_found": "Utilisateur introuvable",
+    "already_verified": "Email déjà vérifié"
+  },
+  "ai": {
+    "prompt_required": "Le prompt est requis",
+    "daily_limit_reached": "Limite quotidienne de requêtes atteinte",
+    "provider_not_configured": "Le fournisseur IA \"{{provider}}\" n'est pas configuré ou la clé API est manquante. Fournisseurs configurés : {{configured}}",
+    "model_not_found": "Modèle actif \"{{model}}\" introuvable. Vérifiez les modèles disponibles via GET /api/v1/admin/models.",
+    "unknown_provider": "Fournisseur IA inconnu : \"{{provider}}\". Adaptateurs disponibles : {{available}}",
+    "feedback_invalid_rating": "rating doit être 'good' ou 'bad'",
+    "feedback_saved": "Avis enregistré",
+    "feedback_not_found": "Réponse introuvable ou ne vous appartient pas",
+    "regenerate_not_found": "Réponse originale introuvable ou ne vous appartient pas"
+  },
+  "billing": {
+    "disabled": "Le système de paiement est actuellement désactivé",
+    "plan_not_found": "Forfait actif \"{{slug}}\" introuvable",
+    "price_not_configured": "L'ID de prix Stripe n'est pas configuré pour le forfait \"{{slug}}\"",
+    "customer_not_found": "Client Stripe introuvable pour cet utilisateur"
+  },
+  "admin": {
+    "user_not_found": "Utilisateur introuvable",
+    "model_not_found": "Modèle introuvable",
+    "plan_not_found": "Forfait introuvable",
+    "invalid_provider": "Fournisseur invalide : \"{{provider}}\". Fournisseurs pris en charge : {{supported}}",
+    "cannot_delete_own_admin": "Vous ne pouvez pas retirer vos propres droits d'administrateur",
+    "last_admin_write_protection": "C'est le seul administrateur ayant les droits de gestion des administrateurs. Accordez d'abord ce droit à un autre administrateur."
+  }
+}
